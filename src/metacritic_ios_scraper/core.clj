@@ -4,8 +4,8 @@
             [clj-http.client :as client])
   (:gen-class))
 
-(def metacritic-base-url "http://www.metacritic.com/")
-(def new-ios-releases-path "browse/games/release-date/new-releases/ios/metascore")
+(def metacritic-base-url "http://www.metacritic.com")
+(def new-ios-releases-path "/browse/games/release-date/new-releases/ios/metascore")
 (def new-ios-releases-url (str metacritic-base-url new-ios-releases-path))
 
 (def user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454.101 Chrome/45.0.2454.101 Safari/537.36")
@@ -37,15 +37,16 @@
   (let [raw-response (fetch-url new-ios-releases-url user-agent)]
     (->> (html/select raw-response #{[:.basic_stat html/first-child]})
          (partition 2)
-         (pmap (fn [game-and-score]
+         (map (fn [game-and-score]
                 (let [game (first (filter #(= :a (:tag %)) game-and-score))
                       score (first (filter #(= :div (:tag %)) game-and-score))]
                   (assoc {}
                          :name (clojure.string/trim (first (:content game)))
                          :metacritic-link (str metacritic-base-url (:href (:attrs game)))
-                         :metascore (first (:content score)))))) ; errors out on (Integer/parseInt ..) sometimes. returns string.
+                         :metascore (when-let [raw-score (first (:content score))]
+                                      (Integer/parseInt raw-score)))))) ; occasionally grabs an unintended "preview" game. defensive code
          (remove #(nil? (:metascore %)))
-         (pmap hydrate-game-details-with-app-store-info))))
+         (pmap hydrate-game-details-with-app-store-info)))) ; pmap to parallelize web calls
 
 (defn -main
   "I don't do a whole lot ... yet."
