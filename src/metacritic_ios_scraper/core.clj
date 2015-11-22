@@ -13,7 +13,7 @@
 (defn- fetch-url [url user-agent]
   (with-open [inputstream (-> (java.net.URL. url)
                               .openConnection
-                              (doto (.setRequestProperty "User-Agent" user-agent))
+                              (doto (.setRequestProperty "User-Agent" user-agent)) ; HACK
                               .getContent)]
     (html/html-resource inputstream)))
 
@@ -24,7 +24,7 @@
         app-store-response (first (:results (:body (client/get app-store-base-url
                                                                {:query-params {:term name
                                                                                :entity "software"
-                                                                               :limit 1} ; bad assumption 
+                                                                               :limit 1} ; bad assumption that first result is correct
                                                                 :as :json}))))]
     (assoc m
            :app-store-link (:trackViewUrl app-store-response)
