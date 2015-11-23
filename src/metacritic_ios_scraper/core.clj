@@ -80,8 +80,11 @@
                    [:td app-store-rating-current-version]
                    [:td [:a {:href app-store-link :style app-store-badge}]]])) xs)]))
 
+(defn index-markup []
+  (games->table-markup (fetch-games-and-scores)))
+
 (defroutes app-routes
-  (GET "/" [] (games->table-markup (fetch-games-and-scores))))
+  (GET "/" [] (index-markup)))
 
 (defn -main []
   (let [port (Integer. "4111")]
