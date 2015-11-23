@@ -49,6 +49,18 @@
          (remove #(nil? (:metascore %)))
          (pmap hydrate-game-details-with-app-store-info)))) ; pmap to parallelize web calls
 
+(def app-store-badge "display:inline-block;overflow:hidden;background:url(http://linkmaker.itunes.apple.com/images/badges/en-us/badge_appstore-lrg.svg) no-repeat;width:165px;height:40px;")
+
+(defn games->table-markup [xs]
+  (html [:table
+         (map (fn [m]
+                (let [{:keys [name metacritic-link metascore app-store-link formatted-price]} m]
+                  [:tr
+                   [:td name]
+                   [:td [:a {:href metacritic-link} metascore]] ;; this might not work
+                   [:td [:a {:href app-store-link :style app-store-badge}]]
+                   [:td formatted-price]])) xs)]))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
