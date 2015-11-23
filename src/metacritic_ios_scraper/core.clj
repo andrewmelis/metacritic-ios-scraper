@@ -89,5 +89,5 @@
   (GET "/" [] (index-markup)))
 
 (defn -main []
-  (let [port (Integer. "4111")]
+  (let [port (Integer. (or (get (System/getenv) "PORT") "4111"))]
     (ring/run-jetty #'app-routes {:port port :join? false})))
