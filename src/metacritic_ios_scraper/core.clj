@@ -2,6 +2,9 @@
   (:require [net.cgrand.enlive-html :as html]
             [cheshire.core :as json]
             [hiccup.core :refer :all]
+            [compojure.core :refer :all]
+            [compojure.route :as route]
+            [ring.adapter.jetty :as ring]
             [clj-http.client :as client])
   (:gen-class))
 
@@ -61,8 +64,9 @@
                    [:td [:a {:href app-store-link :style app-store-badge}]]
                    [:td formatted-price]])) xs)]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
+(defroutes app-routes
+  (GET "/" [] (games->table-markup (fetch-games-and-scores))))
 
+(defn -main []
+  (let [port (Integer. "4111")]
+    (ring/run-jetty #'app-routes {:port port :join? false})))
