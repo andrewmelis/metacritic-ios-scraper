@@ -33,6 +33,7 @@
     (assoc m
            :app-store-link (:trackViewUrl app-store-response)
            :app-store-id (:trackId app-store-response)
+           :app-store-artwork-60 (:artworkUrl60 app-store-response)
            :app-store-rating-current-version (:averageUserRatingForCurrentVersion app-store-response)
            :price (:price app-store-response)
            :formatted-price (:formattedPrice app-store-response))))
@@ -56,13 +57,28 @@
 
 (defn games->table-markup [xs]
   (html [:table
+         [:tr
+          [:th]
+          [:th "Name"]
+          [:th "Metascore"]
+          [:th "Price"]
+          [:th "App Store Rating"]
+          [:th]]
          (map (fn [m]
-                (let [{:keys [name metacritic-link metascore app-store-link formatted-price]} m]
+                (let [{:keys [name
+                              metacritic-link
+                              metascore
+                              app-store-link
+                              app-store-artwork-60
+                              app-store-rating-current-version
+                              formatted-price]} m]
                   [:tr
+                   [:td [:img {:src app-store-artwork-60}]]
                    [:td name]
-                   [:td [:a {:href metacritic-link} metascore]] ;; this might not work
-                   [:td [:a {:href app-store-link :style app-store-badge}]]
-                   [:td formatted-price]])) xs)]))
+                   [:td [:a {:href metacritic-link} metascore]]
+                   [:td formatted-price]
+                   [:td app-store-rating-current-version]
+                   [:td [:a {:href app-store-link :style app-store-badge}]]])) xs)]))
 
 (defroutes app-routes
   (GET "/" [] (games->table-markup (fetch-games-and-scores))))
