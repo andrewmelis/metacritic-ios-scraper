@@ -1,6 +1,7 @@
 (ns metacritic-ios-scraper.core
   (:require [net.cgrand.enlive-html :as html]
             [cheshire.core :as json]
+            [hiccup.core :refer :all]
             [clj-http.client :as client])
   (:gen-class))
 

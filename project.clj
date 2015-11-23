@@ -7,6 +7,7 @@
                  [clj-http "2.0.0"]
                  [cheshire "5.5.0"]
                  [clj-http "2.0.0"]
+                 [hiccup "1.0.5"]
                  [enlive "1.1.6"]]
   :main ^:skip-aot metacritic-ios-scraper.core
   :target-path "target/%s"
