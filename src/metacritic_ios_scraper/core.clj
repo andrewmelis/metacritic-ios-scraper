@@ -81,7 +81,9 @@
                    [:td [:a {:href app-store-link :style app-store-badge}]]])) xs)]))
 
 (defn index-markup []
-  (games->table-markup (fetch-games-and-scores)))
+  (html [:h1 "Best Free iOS Games"]
+        [:p "Do you look at Metacritic to see the best new iOS games out there but groan having to click through to the app store only to find out that they cost $5.99? The table below sorts iOS games by Metascore and displays the prices of each game. Enjoy!"]
+        (games->table-markup (fetch-games-and-scores))))
 
 (defroutes app-routes
   (GET "/" [] (index-markup)))
